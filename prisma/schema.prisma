@@ -1,0 +1,112 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Career {
+  id          Int       @id @default(autoincrement())
+  name        String
+  faculty     String?
+  level       String?
+  duration    Int?
+  description String?
+  subjects    Subject[]
+  courseRecords CourseRecord[]
+  enrollments Enrollment[]
+}
+
+model Subject {
+  id          Int       @id @default(autoincrement())
+  name        String
+  credits     Int
+  description String?
+  semester    Int
+  careerId    Int
+  career      Career    @relation(fields: [careerId], references: [id])
+  courseRecords CourseRecord[]
+  registrations Registration[]
+  assignments Assignment[]
+}
+
+model Student {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  phone       String?
+  status      String?
+  gender      String?
+  semester    Int?
+  enrollments Enrollment[]
+  registrations Registration[]
+}
+
+model Teacher {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String    @unique
+  phone       String?
+  specialty   String?
+  department  String?
+  status      String?
+  registrations Registration[]
+  assignments Assignment[]
+}
+
+model CourseRecord {
+  id               Int       @id @default(autoincrement())
+  careerId         Int
+  subjectId        Int
+  recordDate       DateTime?
+  suggestedSemester Int?
+  status           String?
+
+  career Career @relation(fields: [careerId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
+
+model Enrollment {
+  id              Int       @id @default(autoincrement())
+  studentId       Int
+  careerId        Int
+  enrollmentDate  DateTime?
+  semester        Int?
+  status          String?
+  enrollmentType  String?
+
+  student Student @relation(fields: [studentId], references: [id])
+  career Career  @relation(fields: [careerId], references: [id])
+}
+
+model Registration {
+  id               Int       @id @default(autoincrement())
+  studentId        Int
+  subjectId        Int
+  academicTerm     String?
+  registrationDate DateTime?
+  status           String?
+  grade            Float?
+  groupCode        String?
+  teacherId        Int?
+
+  student Student @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+}
+
+model Assignment {
+  id            Int       @id @default(autoincrement())
+  teacherId     Int
+  subjectId     Int
+  academicTerm  String?
+  groupCode     String?
+  schedule      String?
+  classroom     String?
+  status        String?
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
