@@ -13,14 +13,14 @@ export class CareerService {
     return this.prisma.career.findMany();
   }
 
-  async countStudents(careerId: number) {
+  countStudents(careerId: number) {
     return this.prisma.enrollment.count({
       where: { careerId },
     });
   }
 
   async countTeachers(careerId: number) {
-    const subjects = await this.prisma.subject.findMany({
+    const subjects = await this.prisma.subject.findMany({ 
       where: { careerId },
       select: { id: true },
     });
@@ -34,14 +34,14 @@ export class CareerService {
     return teachers.length;
   }
 
-  async update(id: number, data: any) {
+  update(id: number, data: any) {
     return this.prisma.career.update({
       where: { id },
       data,
     });
   }
 
-  async remove(id: number) {
+  remove(id: number) {
     return this.prisma.career.delete({
       where: { id },
     });

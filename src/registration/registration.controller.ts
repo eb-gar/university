@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Delete, Param } from '@nestjs/common';
 import { RegistrationService } from './registration.service';
 
-@Controller('registrations')
+@Controller('registrations') //registros
 export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 

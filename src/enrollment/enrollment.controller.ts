@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
 
-@Controller('enrollments')
+@Controller('enrollments') //matrículas
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}
 

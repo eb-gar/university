@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 
-@Controller('subjects')
+@Controller('subjects')  //materias
 export class SubjectController {
   constructor(private readonly subjectservice: SubjectService) {}
 

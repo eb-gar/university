@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Delete, Param } from '@nestjs/common';
 import { AssignmentService } from './assignment.service';
 
-@Controller('assignments')
+@Controller('assignments')  //inscripciones
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 

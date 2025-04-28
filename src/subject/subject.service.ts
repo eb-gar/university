@@ -13,13 +13,13 @@ export class SubjectService {
     return this.prisma.subject.findMany();
   }
 
-  async countStudents(subjectId: number) {
+  countStudents(subjectId: number) {
     return this.prisma.registration.count({
       where: { subjectId },
     });
   }
 
-  async getTeachers(subjectId: number) {
+  getTeachers(subjectId: number) {
     return this.prisma.assignment.findMany({
       where: { subjectId },
       select: {
