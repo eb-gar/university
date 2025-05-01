@@ -16,14 +16,15 @@ export class CareerController {
   }
 
   @Get(':careerId/students')
-  countStudents(@Param('careerId') careerId: string) {
-    return this.careerService.countStudents(+careerId);
+  async getStudentsByCareer(@Param('careerId') careerId: string) {
+    return this.careerService.getStudentsByCareer(+careerId);
   }
-
+  
   @Get(':careerId/teachers')
-  countTeachers(@Param('careerId') careerId: string) {
-    return this.careerService.countTeachers(+careerId);
-  }
+async getTeachersByCareer(@Param('careerId') careerId: string) {
+  return this.careerService.getTeachersByCareer(+careerId);
+}
+
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: any) {

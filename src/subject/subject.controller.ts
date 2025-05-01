@@ -16,8 +16,8 @@ export class SubjectController {
   }
 
   @Get(':subjectId/students')
-  countStudents(@Param('subjectId') subjectId: string) {
-    return this.subjectservice.countStudents(+subjectId);
+  getStudents(@Param('subjectId') subjectId: string) {
+    return this.subjectservice.getStudents(+subjectId);
   }
 
   @Get(':subjectId/teachers')

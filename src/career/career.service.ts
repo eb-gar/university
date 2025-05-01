@@ -13,26 +13,37 @@ export class CareerService {
     return this.prisma.career.findMany();
   }
 
-  countStudents(careerId: number) {
-    return this.prisma.enrollment.count({
+  async getStudentsByCareer(careerId: number) {
+    const enrollments = await this.prisma.enrollment.findMany({
       where: { careerId },
+      include: {
+        student: true, 
+      },
     });
+    return enrollments.map((e) => e.student);
   }
+  
 
-  async countTeachers(careerId: number) {
-    const subjects = await this.prisma.subject.findMany({ 
+  async getTeachersByCareer(careerId: number) {
+    const subjects = await this.prisma.subject.findMany({
       where: { careerId },
       select: { id: true },
     });
+  
     const subjectIds = subjects.map((s) => s.id);
-
-    const teachers = await this.prisma.assignment.findMany({
-      where: { subjectId: { in: subjectIds } },
-      distinct: ['teacherId'],
+  
+    const assignments = await this.prisma.assignment.findMany({
+      where: {
+        subjectId: { in: subjectIds },
+      },
+      include: {
+        teacher: true, 
+      },
     });
-
-    return teachers.length;
+  
+    return assignments.map((a) => a.teacher);
   }
+  
 
   update(id: number, data: any) {
     return this.prisma.career.update({

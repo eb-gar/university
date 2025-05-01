@@ -13,20 +13,26 @@ export class SubjectService {
     return this.prisma.subject.findMany();
   }
 
-  countStudents(subjectId: number) {
-    return this.prisma.registration.count({
+  async getStudents(subjectId: number) {
+    const registrations = await this.prisma.registration.findMany({
       where: { subjectId },
+      include: { student: true }, // Esto incluye la información completa del estudiante
     });
+  
+    return registrations.map((r) => r.student);
   }
+  
 
-  getTeachers(subjectId: number) {
-    return this.prisma.assignment.findMany({
+  async getTeachers(subjectId: number) {
+    const assignments = await this.prisma.assignment.findMany({
       where: { subjectId },
-      select: {
-        teacher: true,
-      },
+      include: { teacher: true },
+      distinct: ['teacherId'], // Evita que se repitan profesores
     });
+  
+    return assignments.map((a) => a.teacher);
   }
+  
 
   update(id: number, data: any) {
     return this.prisma.subject.update({
