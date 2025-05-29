@@ -11,9 +11,10 @@ import { AssignmentModule } from './assignment/assignment.module';
 import { PrismaService } from './prisma/prisma.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { CourseRecordModule } from './course-record/course-record.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [CareerModule, SubjectModule, StudentModule, TeacherModule, EnrollmentModule, RegistrationModule, AssignmentModule, PrismaModule, CourseRecordModule],
+  imports: [CareerModule, SubjectModule, StudentModule, TeacherModule, EnrollmentModule, RegistrationModule, AssignmentModule, PrismaModule, CourseRecordModule, AuthModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
