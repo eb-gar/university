@@ -1,5 +1,5 @@
-export enum ValidRoles {
-  admin = 'ADMIN',
-  teacher = 'TEACHER',
-  student = 'STUDENT',
+export interface UserLoginPayload {
+  id: number;
+  email: string;
+  role: string;
 }

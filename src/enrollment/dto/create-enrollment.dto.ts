@@ -1,1 +1,5 @@
-export class CreateEnrollmentDto {}
+export class CreateEnrollmentDto {
+  studentId: number;
+  careerId: number;
+  period: string;
+}

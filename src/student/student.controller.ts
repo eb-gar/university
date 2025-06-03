@@ -1,41 +1,41 @@
-import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { Auth } from '../auth/decorators/auth.decorator';
-import { ValidRoles } from '../auth/interfaces/valid-roles.interface';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('students') //estudiantes
+@Controller('students')
 export class StudentController {
   constructor(private readonly studentservice: StudentService) {}
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Post()
-  create(@Body() data: any) {
+  create(@Body() data: CreateStudentDto) {
     return this.studentservice.create(data);
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher)
+  @Auth('ADMIN', 'TEACHER')
   @Get()
   findAll() {
     return this.studentservice.findAll();
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.student)
+  @Auth('ADMIN', 'STUDENT')
   @Get(':studentId/subjects-careers')
   getSubjectsAndCareers(@Param('studentId') studentId: string) {
     return this.studentservice.getSubjectsAndCareers(+studentId);
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.student)
+  @Auth('ADMIN', 'STUDENT')
   @Patch(':studentId')
-  update(@Param('studentId') studentId: string, @Body() data: any) {
+  update(@Param('studentId') studentId: string, @Body() data: UpdateStudentDto) {
     return this.studentservice.update(+studentId, data);
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Delete(':studentId')
   delete(@Param('studentId') studentId: string) {
     return this.studentservice.remove(+studentId);

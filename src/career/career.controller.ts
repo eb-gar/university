@@ -12,48 +12,46 @@ import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
+import { CreateCareerDto } from './dto/create-career.dto';
+import { UpdateCareerDto } from './dto/update-career.dto';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('careers')
 export class CareerController {
   constructor(private readonly careerService: CareerService) {}
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Auth('ADMIN', 'TEACHER')
   @Post()
-  create(@Body() data: any) {
+  create(@Body() data: CreateCareerDto) {
     return this.careerService.create(data);
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher, ValidRoles.student)
+  @Auth('ADMIN', 'TEACHER', 'STUDENT')
   @Get()
   findAll() {
     return this.careerService.findAll();
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher)
+  @Auth('ADMIN', 'TEACHER')
   @Get(':careerId/students')
   async getStudentsByCareer(@Param('careerId') careerId: string) {
     return this.careerService.getStudentsByCareer(+careerId);
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Get(':careerId/teachers')
-  @Auth(ValidRoles.admin, ValidRoles.teacher, ValidRoles.student)
   async getTeachersByCareer(@Param('careerId') careerId: string) {
     return this.careerService.getTeachersByCareer(+careerId);
   }
 
-  @Auth(ValidRoles.admin)
   @Patch(':id')
-  @Auth(ValidRoles.admin)
-  update(@Param('id') id: string, @Body() data: any) {
+  @Auth('ADMIN')
+  update(@Param('id') id: string, @Body() data: UpdateCareerDto) {
     return this.careerService.update(+id, data);
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Delete(':id')
-  @Auth(ValidRoles.admin)
   delete(@Param('id') id: string) {
     return this.careerService.remove(+id);
   }

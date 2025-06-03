@@ -1,35 +1,44 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { EnrollmentService } from './enrollment.service';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
-import { ValidRoles } from 'src/auth/interfaces/valid-roles.interface';
+import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
+import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('enrollments') //matrículas
+@Controller('enrollment')
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Post()
-  create(@Body() data: any) {
+  create(@Body() data: CreateEnrollmentDto) {
     return this.enrollmentService.create(data);
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher)
+  @Auth('ADMIN', 'TEACHER')
   @Get()
   findAll() {
     return this.enrollmentService.findAll();
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: any) {
+  update(@Param('id') id: string, @Body() data: UpdateEnrollmentDto) {
     return this.enrollmentService.update(+id, data);
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.enrollmentService.remove(+id);

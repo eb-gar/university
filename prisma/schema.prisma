@@ -115,17 +115,36 @@ generator client {
     subject Subject @relation(fields: [subjectId], references: [id])
   }
 
-  model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
+model User {
+  id       Int        @id @default(autoincrement())
+  email    String     @unique
   password String
-  role     Role     
+  roleId   Int
+  role     RoleModel  @relation(fields: [roleId], references: [id])
   student  Student?
   teacher  Teacher?
 }
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  roles       RolePermission[]
+}
 
-enum Role {
-  ADMIN
-  STUDENT
-  TEACHER
+model RoleModel {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  users       User[]
+  permissions RolePermission[]
+}
+
+model RolePermission {
+  id           Int           @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         RoleModel     @relation(fields: [roleId], references: [id])
+  permission   Permission    @relation(fields: [permissionId], references: [id])
+
+  @@unique([roleId, permissionId])
 }

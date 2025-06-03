@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateStudentDto } from './dto/create-student.dto';
+import { UpdateStudentDto } from './dto/update-student.dto';
 
 @Injectable()
 export class StudentService {
   constructor(private prisma: PrismaService) {}
 
-  create(data: any) {
+  create(data: CreateStudentDto) {
     return this.prisma.student.create({ data });
   }
 
@@ -30,7 +32,7 @@ export class StudentService {
     };
   }
 
-  update(id: number, data: any) {
+  update(id: number, data: UpdateStudentDto) {
     return this.prisma.student.update({
       where: { id },
       data,

@@ -2,34 +2,35 @@ import { Controller, Get, Post, Body, Patch, Delete, Param } from '@nestjs/commo
 import { AssignmentService } from './assignment.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
+import { UseGuards } from '@nestjs/common';
 import { Auth } from '../auth/decorators/auth.decorator';
-import { ValidRoles } from '../auth/interfaces/valid-roles.interface';
+import { CreateAssignmentDto } from './dto/create-assignment.dto';
+import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('assignments')  //inscripciones
+@Controller('assignments')
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher)
+  @Auth('ADMIN', 'TEACHER')
   @Post()
-  create(@Body() data: any) {
+  create(@Body() data: CreateAssignmentDto) {
     return this.assignmentService.create(data);
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher, ValidRoles.student)
+  @Auth('ADMIN', 'TEACHER', 'STUDENT')
   @Get()
   findAll() {
     return this.assignmentService.findAll();
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.teacher)
+  @Auth('ADMIN', 'TEACHER')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: any) {
+  update(@Param('id') id: string, @Body() data: UpdateAssignmentDto) {
     return this.assignmentService.update(+id, data);
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.assignmentService.remove(+id);

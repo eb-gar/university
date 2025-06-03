@@ -1,35 +1,44 @@
-import { Controller, Get, Post, Body, Patch, Delete, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { RegistrationService } from './registration.service';
-import { Auth } from '../auth/decorators/auth.decorator';
-import { ValidRoles } from '../auth/interfaces/valid-roles.interface';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { CreateRegistrationDto } from './dto/create-registration.dto';
+import { UpdateRegistrationDto } from './dto/update-registration.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('registrations') //registros
+@Controller('registration')
 export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 
-  @Auth(ValidRoles.admin, ValidRoles.student) 
+  @Auth('ADMIN', 'STUDENT')
   @Post()
-  create(@Body() data: any) {
+  create(@Body() data: CreateRegistrationDto) {
     return this.registrationService.create(data);
   }
 
-  @Auth(ValidRoles.admin, ValidRoles.student)
+  @Auth('ADMIN', 'STUDENT')
   @Get()
   findAll() {
     return this.registrationService.findAll();
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: any) {
+  update(@Param('id') id: string, @Body() data: UpdateRegistrationDto) {
     return this.registrationService.update(+id, data);
   }
 
-  @Auth(ValidRoles.admin)
+  @Auth('ADMIN')
   @Delete(':id')
   delete(@Param('id') id: string) {
     return this.registrationService.remove(+id);
