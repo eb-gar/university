@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Delete, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Param, UseGuards, Query } from '@nestjs/common';
 import { AssignmentService } from './assignment.service';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Auth } from '../auth/decorators/auth.decorator';
+import { PaginationDto } from '.././pagination/pagination.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('assignments')
@@ -25,8 +26,17 @@ export class AssignmentController {
     roles: ['STUDENT', 'TEACHER', 'ADMIN'],
     permissions: ['view_assignments'],
   })
-  findAll() {
-    return this.assignmentService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.assignmentService.findAll(paginationDto);
+  }
+
+  @Get(':id')
+  @Auth({
+    roles: ['STUDENT', 'TEACHER', 'ADMIN'],
+    permissions: ['view_assignments'],
+  })
+  findOne(@Param('id') id: string) {
+    return this.assignmentService.findOne(+id);
   }
 
   @Patch(':id')

@@ -27,4 +27,38 @@ export class EnrollmentService {
       where: { id },
     });
   }
+
+  async createEnrollmentWithSubjects(data: CreateEnrollmentDto, subjectIds: number[]) {
+    return this.prisma.$transaction(async (prisma) => {
+      const enrollment = await prisma.enrollment.create({
+        data: {
+          studentId: data.studentId,
+          careerId: data.careerId,
+          enrollmentDate: new Date(),
+          status: 'ACTIVE',
+        },
+      });
+
+      const registrations = await Promise.all(
+        subjectIds.map(subjectId =>
+          prisma.registration.create({
+            data: {
+              studentId: data.studentId,
+              subjectId,
+              academicTerm: data.academicTerm,
+              registrationDate: new Date(),
+              status: 'ACTIVE',
+            },
+          })
+        )
+      );
+
+      await prisma.student.update({
+        where: { id: data.studentId },
+        data: { semester: data.semester },
+      });
+
+      return { enrollment, registrations };
+    });
+  }
 }

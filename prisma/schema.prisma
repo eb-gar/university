@@ -30,6 +30,9 @@ model Subject {
   courseRecords CourseRecord[]
   registrations Registration[]
   assignments   Assignment[]
+  
+  prerequisites Subject[] @relation("SubjectPrerequisites")
+  requiredFor   Subject[] @relation("SubjectPrerequisites")
 }
 
 model Student {

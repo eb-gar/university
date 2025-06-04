@@ -14,6 +14,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { CreateEnrollmentDto } from './dto/create-enrollment.dto';
 import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
+import { Query } from '@nestjs/common';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('enrollment')
@@ -28,6 +29,16 @@ export class EnrollmentController {
   create(@Body() data: CreateEnrollmentDto) {
     return this.enrollmentService.create(data);
   }
+
+  @Post('with-subjects')
+@Auth({ roles: ['ADMIN'], permissions: ['manage_enrollments'] })
+async createWithSubjects(
+  @Body() data: CreateEnrollmentDto,
+  @Query('subjectIds') subjectIds: string,
+) {
+  const subjectIdsArray = subjectIds.split(',').map(id => parseInt(id.trim()));
+  return this.enrollmentService.createEnrollmentWithSubjects(data, subjectIdsArray);
+}
 
   @Get()
   @Auth({
