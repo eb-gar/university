@@ -7,144 +7,153 @@ generator client {
   provider = "prisma-client-js"
 }
 
-  model Career {
-    id          Int       @id @default(autoincrement())
-    name        String
-    faculty     String?
-    level       String?
-    duration    Int?
-    description String?
-    subjects    Subject[]
-    courseRecords CourseRecord[]
-    enrollments Enrollment[]
-  }
+model Career {
+  id            Int            @id @default(autoincrement())
+  name          String
+  faculty       String?
+  level         String?
+  duration      Int?
+  description   String?
+  subjects      Subject[]
+  courseRecords CourseRecord[]
+  enrollments   Enrollment[]
+}
 
-  model Subject {
-    id          Int       @id @default(autoincrement())
-    name        String
-    credits     Int
-    description String?
-    semester    Int
-    careerId    Int
-    career      Career    @relation(fields: [careerId], references: [id])
-    courseRecords CourseRecord[]
-    registrations Registration[]
-    assignments Assignment[]
-  }
+model Subject {
+  id            Int            @id @default(autoincrement())
+  name          String
+  credits       Int
+  description   String?
+  semester      Int
+  careerId      Int
+  career        Career         @relation(fields: [careerId], references: [id])
+  courseRecords CourseRecord[]
+  registrations Registration[]
+  assignments   Assignment[]
+}
 
-  model Student {
-  id          Int       @id @default(autoincrement())
-  name        String
-  userId      Int       @unique
-  user        User      @relation(fields: [userId], references: [id])
-  email       String    @unique
-  phone       String?
-  status      String?
-  gender      String?
-  semester    Int?
-  enrollments Enrollment[]
+model Student {
+  id            Int            @id @default(autoincrement())
+  name          String
+  userId        Int            @unique
+  user          User           @relation(fields: [userId], references: [id])
+  email         String         @unique
+  phone         String?
+  status        String?
+  gender        String?
+  semester      Int?
+  enrollments   Enrollment[]
   registrations Registration[]
 }
 
-  model Teacher {
-  id          Int       @id @default(autoincrement())
-  name        String
-  userId      Int       @unique
-  user        User      @relation(fields: [userId], references: [id])
-  email       String    @unique
-  phone       String?
-  specialty   String?
-  department  String?
-  status      String?
+model Teacher {
+  id            Int            @id @default(autoincrement())
+  name          String
+  userId        Int            @unique
+  user          User           @relation(fields: [userId], references: [id])
+  email         String         @unique
+  phone         String?
+  specialty     String?
+  department    String?
+  status        String?
   registrations Registration[]
-  assignments Assignment[]
+  assignments   Assignment[]
 }
 
-  model CourseRecord {
-    id               Int       @id @default(autoincrement())
-    careerId         Int
-    subjectId        Int
-    recordDate       DateTime?
-    suggestedSemester Int?
-    status           String?
+model CourseRecord {
+  id                Int       @id @default(autoincrement())
+  careerId          Int
+  subjectId         Int
+  recordDate        DateTime?
+  suggestedSemester Int?
+  status            String?
 
-    career Career @relation(fields: [careerId], references: [id])
-    subject Subject @relation(fields: [subjectId], references: [id])
-  }
+  career  Career  @relation(fields: [careerId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
 
-  model Enrollment {
-    id              Int       @id @default(autoincrement())
-    studentId       Int
-    careerId        Int
-    enrollmentDate  DateTime?
-    semester        Int?
-    status          String?
-    enrollmentType  String?
+model Enrollment {
+  id             Int       @id @default(autoincrement())
+  studentId      Int
+  careerId       Int
+  enrollmentDate DateTime?
+  semester       Int?
+  status         String?
+  enrollmentType String?
 
-    student Student @relation(fields: [studentId], references: [id])
-    career Career  @relation(fields: [careerId], references: [id])
-  }
+  student Student @relation(fields: [studentId], references: [id])
+  career  Career  @relation(fields: [careerId], references: [id])
+}
 
-  model Registration {
-    id               Int       @id @default(autoincrement())
-    studentId        Int
-    subjectId        Int
-    academicTerm     String?
-    registrationDate DateTime?
-    status           String?
-    grade            Float?
-    groupCode        String?
-    teacherId        Int?
+model Registration {
+  id               Int       @id @default(autoincrement())
+  studentId        Int
+  subjectId        Int
+  academicTerm     String?
+  registrationDate DateTime?
+  status           String?
+  grade            Float?
+  groupCode        String?
+  teacherId        Int?
 
-    student Student @relation(fields: [studentId], references: [id])
-    subject Subject @relation(fields: [subjectId], references: [id])
-    teacher Teacher? @relation(fields: [teacherId], references: [id])
-  }
+  student Student  @relation(fields: [studentId], references: [id])
+  subject Subject  @relation(fields: [subjectId], references: [id])
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+}
 
-  model Assignment {
-    id            Int       @id @default(autoincrement())
-    teacherId     Int
-    subjectId     Int
-    academicTerm  String?
-    groupCode     String?
-    schedule      String?
-    classroom     String?
-    status        String?
+model Assignment {
+  id           Int     @id @default(autoincrement())
+  teacherId    Int
+  subjectId    Int
+  academicTerm String?
+  groupCode    String?
+  schedule     String?
+  classroom    String?
+  status       String?
 
-    teacher Teacher @relation(fields: [teacherId], references: [id])
-    subject Subject @relation(fields: [subjectId], references: [id])
-  }
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  password String
-  roleId   Int
-  role     RoleModel  @relation(fields: [roleId], references: [id])
-  student  Student?
-  teacher  Teacher?
-}
-model Permission {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
-  description String?
-  roles       RolePermission[]
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Student   Student?
+  Teacher   Teacher?
 }
 
-model RoleModel {
-  id          Int      @id @default(autoincrement())
-  name        String   @unique
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
   description String?
   users       User[]
   permissions RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 }
 
 model RolePermission {
-  id           Int           @id @default(autoincrement())
   roleId       Int
   permissionId Int
-  role         RoleModel     @relation(fields: [roleId], references: [id])
-  permission   Permission    @relation(fields: [permissionId], references: [id])
+  assignedAt   DateTime @default(now())
+  assignedBy   String?
 
-  @@unique([roleId, permissionId])
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
 }

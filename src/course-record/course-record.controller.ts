@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CourseRecordService } from './course-record.service';
 import { Auth } from '../auth/decorators/auth.decorator';
-import { UseGuards } from '@nestjs/common/decorators/core/use-guards.decorator';
+import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { CreateCourseRecordDto } from './dto/create-course-record.dto';
@@ -20,32 +20,47 @@ import { UpdateCourseRecordDto } from './dto/update-course-record.dto';
 export class CourseRecordController {
   constructor(private readonly courseRecordService: CourseRecordService) {}
 
-  @Auth('ADMIN', 'TEACHER')
   @Post()
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['manage_course_records'],
+  })
   create(@Body() data: CreateCourseRecordDto) {
     return this.courseRecordService.create(data);
   }
 
-  @Auth('ADMIN', 'TEACHER', 'STUDENT')
   @Get()
+  @Auth({
+    roles: ['ADMIN', 'TEACHER'],
+    permissions: ['view_course_records'],
+  })
   findAll() {
     return this.courseRecordService.findAll();
   }
 
-  @Auth('ADMIN', 'TEACHER', 'STUDENT')
   @Get(':id')
+  @Auth({
+    roles: ['ADMIN', 'TEACHER'],
+    permissions: ['view_course_records'],
+  })
   findOne(@Param('id') id: string) {
     return this.courseRecordService.findOne(+id);
   }
 
-  @Auth('ADMIN', 'TEACHER')
   @Patch(':id')
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['manage_course_records'],
+  })
   update(@Param('id') id: string, @Body() data: UpdateCourseRecordDto) {
     return this.courseRecordService.update(+id, data);
   }
 
-  @Auth('ADMIN')
   @Delete(':id')
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['delete_course_records'],
+  })
   remove(@Param('id') id: string) {
     return this.courseRecordService.remove(+id);
   }

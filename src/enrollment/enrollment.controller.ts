@@ -20,26 +20,38 @@ import { UpdateEnrollmentDto } from './dto/update-enrollment.dto';
 export class EnrollmentController {
   constructor(private readonly enrollmentService: EnrollmentService) {}
 
-  @Auth('ADMIN')
   @Post()
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['manage_enrollments'],
+  })
   create(@Body() data: CreateEnrollmentDto) {
     return this.enrollmentService.create(data);
   }
 
-  @Auth('ADMIN', 'TEACHER')
   @Get()
+  @Auth({
+    roles: ['ADMIN', 'TEACHER'],
+    permissions: ['view_enrollments'],
+  })
   findAll() {
     return this.enrollmentService.findAll();
   }
 
-  @Auth('ADMIN')
   @Patch(':id')
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['manage_enrollments'],
+  })
   update(@Param('id') id: string, @Body() data: UpdateEnrollmentDto) {
     return this.enrollmentService.update(+id, data);
   }
 
-  @Auth('ADMIN')
   @Delete(':id')
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['delete_enrollments'],
+  })
   delete(@Param('id') id: string) {
     return this.enrollmentService.remove(+id);
   }

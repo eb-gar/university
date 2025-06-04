@@ -20,26 +20,38 @@ import { UpdateRegistrationDto } from './dto/update-registration.dto';
 export class RegistrationController {
   constructor(private readonly registrationService: RegistrationService) {}
 
-  @Auth('ADMIN', 'STUDENT')
   @Post()
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['manage_registrations'],
+  })
   create(@Body() data: CreateRegistrationDto) {
     return this.registrationService.create(data);
   }
 
-  @Auth('ADMIN', 'STUDENT')
   @Get()
+  @Auth({
+    roles: ['ADMIN', 'TEACHER'],
+    permissions: ['view_registrations'],
+  })
   findAll() {
     return this.registrationService.findAll();
   }
 
-  @Auth('ADMIN')
   @Patch(':id')
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['manage_registrations'],
+  })
   update(@Param('id') id: string, @Body() data: UpdateRegistrationDto) {
     return this.registrationService.update(+id, data);
   }
 
-  @Auth('ADMIN')
   @Delete(':id')
+  @Auth({
+    roles: ['ADMIN'],
+    permissions: ['delete_registrations'],
+  })
   delete(@Param('id') id: string) {
     return this.registrationService.remove(+id);
   }
