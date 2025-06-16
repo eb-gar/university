@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -54,6 +55,44 @@ export class SubjectController {
   })
   getTeachers(@Param('subjectId') subjectId: string) {
     return this.subjectservice.getTeachers(+subjectId);
+  }
+
+  @Get('filtered')
+  @Auth({
+    roles: ['ADMIN', 'TEACHER', 'STUDENT'],
+    permissions: ['view_subjects'],
+  })
+  async getFilteredSubjects(
+    @Query('careerId') careerId?: string,
+    @Query('semester') semester?: string,
+    @Query('search') search?: string,
+  ) {
+    return this.subjectservice.getFilteredSubjects(
+      careerId ? +careerId : undefined,
+      semester ? +semester : undefined,
+      search,
+    );
+  }
+
+  @Get(':id/details')
+  @Auth({
+    roles: ['ADMIN', 'TEACHER', 'STUDENT'],
+    permissions: ['view_subjects'],
+  })
+  async getSubjectDetails(@Param('id') id: string) {
+    return this.subjectservice.getSubjectDetails(+id);
+  }
+
+    @Get('with-prerequisites')
+  @Auth({ roles: ['ADMIN', 'TEACHER'], permissions: ['view_subjects'] })
+  async getWithPrerequisites() {
+    return this.subjectservice.getSubjectsWithPrerequisitesAndStats();
+  }
+
+  @Get('most-teachers')
+  @Auth({ roles: ['ADMIN', 'TEACHER'], permissions: ['view_subjects'] })
+  async getMostTeachers() {
+    return this.subjectservice.getSubjectsWithMostTeachers();
   }
 
   @Patch(':id')

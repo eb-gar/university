@@ -4,10 +4,10 @@ import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.rolePermission.deleteMany();
+   await prisma.rolePermission.deleteMany();
   await prisma.permission.deleteMany();
-  await prisma.role.deleteMany();
   await prisma.user.deleteMany();
+  await prisma.role.deleteMany();
 
   const permissionsData = [
   { name: 'manage_assignments', description: 'Gestionar tareas' }, // assignments
@@ -116,81 +116,9 @@ async function main() {
     ],
   },
   {
-    name: 'ADMIN',
-    permissions: [
-      // Perfil
-      'view_profile',
-      'edit_profile',
-
-      // Cursos
-      'view_courses',
-      'create_courses',
-      'edit_courses',
-      'delete_courses',
-
-      // Calificaciones
-      'view_grades',
-      'edit_grades',
-      'assign_grades',
-
-      // Usuarios
-      'manage_users',
-      'delete_users',
-      'reset_passwords',
-      'view_users',
-
-      // Roles
-      'manage_roles',
-      'view_roles',
-
-      // Estudiantes
-      'view_students',
-      'manage_students',
-      'view_student_data',
-      'delete_students',
-
-      // Docentes
-      'view_teachers',
-      'manage_teachers',
-      'delete_teachers',
-
-      // Inscripciones
-      'manage_enrollments',
-      'view_enrollments',
-      'edit_enrollments',
-      'delete_enrollments',
-      'manage_registrations',
-      'view_registrations',
-      'delete_registrations',
-
-      // Tareas
-      'view_assignments',
-      'manage_assignments',
-      'delete_assignments',
-
-      // Carreras
-      'view_careers',
-      'manage_careers',
-      'delete_careers',
-
-      // Materias
-      'view_subjects',
-      'view_subject_students',
-      'view_subject_teachers',
-      'manage_subjects',
-      'delete_subjects',
-
-      // Registros de cursos
-      'view_course_records',
-      'manage_course_records',
-      'delete_course_records',
-
-      //Roles
-      'manage_roles',
-      'view_roles',
-      'view_users',
-    ],
-  },
+      name: 'ADMIN',
+      permissions: permissionsData.map(p => p.name), 
+    },
 ];
 
 

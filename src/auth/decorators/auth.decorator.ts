@@ -1,4 +1,3 @@
-// src/auth/decorators/auth.decorator.ts
 import { applyDecorators, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { RolesGuard } from '../guards/roles.guard';
@@ -13,7 +12,6 @@ interface AuthOptions {
 }
 
 export function Auth(options?: AuthOptions) {
-  // Si es público, no aplicamos guards
   if (options?.isPublic) {
     return applyDecorators();
   }

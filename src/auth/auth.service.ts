@@ -62,7 +62,6 @@ export class AuthService {
       throw new ConflictException('Email already registered');
     }
 
-    // Asignar rol USER por defecto si no se especifica
     const roleName = data.role || 'USER';
     const role = await this.prisma.role.findUnique({
       where: { name: roleName },

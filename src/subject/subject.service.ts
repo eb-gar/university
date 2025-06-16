@@ -34,6 +34,115 @@ export class SubjectService {
     return assignments.map((a) => a.teacher);
   }
 
+  async getFilteredSubjects(
+  careerId?: number,
+  semester?: number,
+  search?: string
+) {
+  return this.prisma.subject.findMany({
+    where: {
+      AND: [
+        careerId ? { careerId } : {},
+        semester ? { semester } : {},
+        search ? {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } }
+          ]
+        } : {}
+      ]
+    },
+    include: {
+      career: {
+        select: {
+          name: true,
+          faculty: true
+        }
+      }
+    },
+    orderBy: {
+      semester: 'asc'
+    }
+  });
+}
+
+async getSubjectDetails(id: number) {
+  return this.prisma.subject.findUnique({
+    where: { id },
+    include: {
+      career: {
+        select: {
+          name: true,
+          faculty: true,
+          level: true
+        }
+      },
+      prerequisites: {
+        select: {
+          id: true,
+          name: true,
+          semester: true
+        }
+      },
+      requiredFor: {
+        select: {
+          id: true,
+          name: true,
+          semester: true
+        }
+      },
+      _count: {
+        select: {
+          registrations: true,
+          assignments: true
+        }
+      }
+    }
+  });
+}
+
+async getSubjectsWithPrerequisitesAndStats() {
+  return this.prisma.subject.findMany({
+    include: {
+      prerequisites: {
+        select: {
+          id: true,
+          name: true,
+          semester: true
+        }
+      },
+      _count: {
+        select: {
+          registrations: true,
+          assignments: true
+        }
+      },
+      career: {
+        select: {
+          name: true
+        }
+      }
+    },
+    orderBy: {
+      semester: 'asc'
+    }
+  });
+}
+
+async getSubjectsWithMostTeachers() {
+  return this.prisma.$queryRaw`
+    SELECT 
+      s.id,
+      s.name,
+      COUNT(DISTINCT a.teacherId) as teacher_count
+    FROM "Subject" s
+    LEFT JOIN "Assignment" a ON s.id = a.subjectId
+    GROUP BY s.id
+    ORDER BY teacher_count DESC
+    LIMIT 10
+  `;
+}
+
   update(id: number, data: UpdateSubjectDto) {
     return this.prisma.subject.update({
       where: { id },
